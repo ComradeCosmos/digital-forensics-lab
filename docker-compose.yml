@@ -11,6 +11,7 @@ services:
       - ./:/workspace
     ports:
       - "8888:8888" # Jupyter Lab
+      - "5000:5000" # Interactive Learning Lab Portal
       - "8080:8080" # Web interfaces / demo tools
     environment:
       - TZ=UTC
