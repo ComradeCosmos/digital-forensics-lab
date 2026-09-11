@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """
 Master Digital Forensics Lab Test & Execution Suite
-Executes and validates all runnable forensic components, datasets, and parsers.
+Engineered & Verified by: Subham Biswas
+Supervised by: Dr. Pooja Shah
 """
 import os
 import sys
@@ -112,6 +113,7 @@ def run_cli_tools_verification():
 def main():
     print("=" * 65)
     print("      DIGITAL FORENSICS LAB - AUTOMATED MASTER RUNNER")
+    print("      Engineered by: Subham Biswas | Mentor: Dr. Pooja Shah")
     print("=" * 65)
     run_ai4forensics()
     run_nist_event_logs()
