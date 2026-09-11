@@ -1,0 +1,22 @@
+{
+    "Email": {
+        "From": "support@banksecure.com",
+        "Subject": "Urgent: Verify Your Account Now",
+        "Content": "strange email asking to verify account details urgently"
+    },
+    "IP Address": "192.168.10.45",
+    "Domain": "banksecure.com",
+    "URLs": [
+        "http://banksecure-verification.com/login",
+        "http://banksecure-verification.com/account-details"
+    ],
+    "File": {
+        "Name": "AccountDetails.exe",
+        "Creation Time": "10:20 AM",
+        "MD5 Hash": "e99a18c428cb38d5f260853678922e03"
+    },
+    "Timestamps": {
+        "Visited at 10:15 AM": "http://banksecure-verification.com/login",
+        "Visited at 10:17 AM": "http://banksecure-verification.com/account-details"
+    }
+}
