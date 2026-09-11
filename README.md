@@ -1,4 +1,4 @@
-# 🛡️ Digital Forensics & Cyber Forensic Intelligence Laboratory
+# Digital Forensics & Cyber Forensic Intelligence Laboratory
 
 <p align="center">
   <img src="https://img.shields.io/badge/Maintained%20by-Subham%20Biswas-blue.svg?style=for-the-badge" alt="Maintained by Subham Biswas" />
@@ -10,34 +10,55 @@
 
 ---
 
-## 📌 Overview
+## 1. Overview
 
 This repository provides a complete, modern, and containerized **Digital Forensics and Incident Response (DFIR)** laboratory ecosystem engineered and verified by **Subham Biswas** under the mentorship of **Dr. Pooja Shah**.
 
 The platform encapsulates over **12,000 forensic evidence artifacts**, real-world enterprise disk images, network packet captures, mobile/IoT hardware chip-off extractions, and state-of-the-art **Artificial Intelligence (AI) forensic analysis pipelines**.
 
-### 🌟 Key Highlights & Infrastructure Features
-- 🐳 **Full Docker Containerization:** Turn-key [`Dockerfile`](Dockerfile) & [`docker-compose.yml`](docker-compose.yml) with pre-configured tools & web-based JupyterLab.
-- 🐉 **Native WSL Kali Linux Support:** Pre-configured and verified on Kali Linux WSL with one-click launcher [`run_wsl_kali.bat`](run_wsl_kali.bat).
-- 🧪 **Master Automated Test Suite:** Integrated verification runner [`run_all_labs.py`](run_all_labs.py) auditing datasets, XML event parsers, STIX threat graphs, and AI models.
-- 📑 **Comprehensive Internship Documentation:** Official academic project report authored for Dr. Pooja Shah in [`INTERNSHIP_REPORT.md`](INTERNSHIP_REPORT.md).
-- 📖 **Complete Lab Manual:** Technical handbook and execution cheat sheets in [`LAB_GUIDE.md`](LAB_GUIDE.md).
+### Key Highlights & Infrastructure Features
+- **Full Docker Containerization:** Turn-key [`Dockerfile`](Dockerfile) & [`docker-compose.yml`](docker-compose.yml) with pre-configured tools & web-based JupyterLab.
+- **Native WSL Linux Support:** Pre-configured and verified on Kali Linux and Ubuntu WSL with launcher [`run_wsl_kali.bat`](run_wsl_kali.bat).
+- **Interactive Command Lab Tutor:** Educational interactive terminal laboratory in [`interactive_tutor.py`](interactive_tutor.py) teaching partition offsets, MFT traversal, TShark filtering, SQLite carving, and AI metrics.
+- **Master Automated Test Suite:** Integrated verification runner [`run_all_labs.py`](run_all_labs.py) auditing datasets, XML event parsers, STIX threat graphs, and AI models.
+- **Comprehensive Internship Documentation:** Official academic project report authored for Dr. Pooja Shah in [`INTERNSHIP_REPORT.md`](INTERNSHIP_REPORT.md).
+- **Complete Lab Manual:** Technical handbook and execution cheat sheets in [`LAB_GUIDE.md`](LAB_GUIDE.md).
 
 ---
 
-## 🚀 Quick Start Guide
+## 2. Interactive Teaching Lab & Tutor
 
-### Option 1: Run via WSL Kali Linux (Recommended)
-You can directly run all tools and scripts inside your native WSL Kali environment:
+The repository features an interactive command-line educational tutor designed to teach students foundational and advanced digital forensics concepts:
+
+```bash
+python3 interactive_tutor.py
+```
+
+### Modules Taught Interactively:
+1. **Disk Partition & Offset Forensics:** Sector-to-byte calculations (`mmls`, `fsstat`).
+2. **Directory & Inode Traversal:** Discovering allocated and deleted files (`fls`, `icat`).
+3. **Windows Security Event Auditing:** Timeline analysis from XML/EVTX records (Event IDs `4608`, `4624`, `4672`).
+4. **Network Traffic Forensics:** Packet protocol filtering with TShark display filters (`http.request`, TCP SYN flags).
+5. **Data Carving & Magic Bytes:** Header/footer reconstruction with Foremost.
+6. **AI in Forensics:** Fine-tuned model evaluation, Confusion Matrices, Precision, Recall, and F1-Scores.
+
+---
+
+## 3. Quick Start Guide
+
+### Option 1: Run via WSL Linux (Recommended)
+You can directly run all tools and scripts inside your native WSL environment:
 
 ```bash
 # Enter the lab workspace
 cd /mnt/c/Users/alkes/.gemini/antigravity-ide/scratch/digital-forensics-lab
 
+# Run the interactive teaching laboratory
+python3 interactive_tutor.py
+
 # Run the master automated test runner
 python3 run_all_labs.py
 ```
-*(On Windows, you can simply double-click [`run_wsl_kali.bat`](run_wsl_kali.bat) to launch the workspace terminal.)*
 
 ---
 
@@ -49,7 +70,7 @@ docker compose up -d --build
 ```
 *(On Windows, double-click [`run_docker.bat`](run_docker.bat))*
 
-- **JupyterLab Dashboard:** Open [http://localhost:8888/?token=forensics](http://localhost:8888/?token=forensics) in your web browser.
+- **JupyterLab Dashboard:** Open `http://localhost:8888/?token=forensics` in your web browser.
 - **Interactive Container Shell:**
   ```bash
   docker exec -it digital_forensics_lab bash
@@ -57,7 +78,7 @@ docker compose up -d --build
 
 ---
 
-## 🔬 Master Verification Suite (`run_all_labs.py`)
+## 4. Master Verification Suite (`run_all_labs.py`)
 
 The repository includes an automated test harness validating the forensic modules:
 
@@ -65,7 +86,7 @@ The repository includes an automated test harness validating the forensic module
 python3 run_all_labs.py
 ```
 
-### ✅ Automated Verification Output:
+### Automated Verification Output:
 ```text
 =================================================================
       DIGITAL FORENSICS LAB - AUTOMATED MASTER RUNNER
@@ -93,13 +114,13 @@ python3 run_all_labs.py
     - SQLite3                   : ver 3.46.1  [OK]
 
 =================================================================
-  🎉 ALL FORENSIC LAB MODULES EXECUTED SUCCESSFULLY (100% PASS)
+  [SUCCESS] ALL FORENSIC LAB MODULES EXECUTED SUCCESSFULLY (100% PASS)
 =================================================================
 ```
 
 ---
 
-## 📚 Curriculum & Laboratory Modules
+## 5. Curriculum & Laboratory Modules
 
 ```
 digital-forensics-lab/
@@ -134,7 +155,7 @@ digital-forensics-lab/
 
 ---
 
-## 🛠️ Toolchain Matrix
+## 6. Toolchain Matrix
 
 | Category | Utilities / Libraries |
 | :--- | :--- |
@@ -147,15 +168,15 @@ digital-forensics-lab/
 
 ---
 
-## 📑 Project Documents & Deliverables
+## 7. Project Documents & Deliverables
 
-- 📄 **[`INTERNSHIP_REPORT.md`](INTERNSHIP_REPORT.md):** Formal project report prepared by **Subham Biswas** for **Dr. Pooja Shah**.
-- 📘 **[`LAB_GUIDE.md`](LAB_GUIDE.md):** Complete technical lab guide and execution operations manual.
-- 🐳 **[`README_DOCKER.md`](README_DOCKER.md):** Containerized deployment and maintenance instructions.
+- **[`INTERNSHIP_REPORT.md`](INTERNSHIP_REPORT.md):** Formal project report prepared by **Subham Biswas** for **Dr. Pooja Shah**.
+- **[`LAB_GUIDE.md`](LAB_GUIDE.md):** Complete technical lab guide and execution operations manual.
+- **[`README_DOCKER.md`](README_DOCKER.md):** Containerized deployment and maintenance instructions.
 
 ---
 
-## ⚖️ License & Attribution
+## 8. License & Attribution
 
 - **Project Packaging & Engineering:** Maintained by **Subham Biswas** under the supervision of **Dr. Pooja Shah**.
 - **Upstream Curriculum & Datasets:** Originates from coursework and grants supported by NSF, DOJ, and DHS (Frank W. Xu).

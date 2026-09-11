@@ -2,3 +2,6 @@ openai_api_key.txt
 openai_api_key.env
 openai_api_key
 my_config.env
+__pycache__/
+*.pyc
+.ipynb_checkpoints/

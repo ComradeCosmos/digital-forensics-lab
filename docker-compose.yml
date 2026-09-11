@@ -10,9 +10,8 @@ services:
     volumes:
       - ./:/workspace
     ports:
-      - "8888:8888" # Jupyter Lab
-      - "5000:5000" # Interactive Learning Lab Portal
-      - "8080:8080" # Web interfaces / demo tools
+      - "8888:8888"
+      - "8080:8080"
     environment:
       - TZ=UTC
     stdin_open: true

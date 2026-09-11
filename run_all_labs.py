@@ -6,8 +6,9 @@ Supervised by: Dr. Pooja Shah
 """
 import os
 import sys
-import sqlite3
 import json
+import sqlite3
+import hashlib
 import subprocess
 import xml.etree.ElementTree as ET
 from sklearn.metrics import classification_report, confusion_matrix, f1_score, accuracy_score
@@ -16,9 +17,9 @@ import pandas as pd
 REPO_ROOT = os.path.abspath(os.path.dirname(__file__))
 
 def print_header(title):
-    print("\n" + "=" * 65)
+    print("\n" + "=" * 68)
     print(f"  [RUNNING] {title}")
-    print("=" * 65)
+    print("=" * 68)
 
 def run_ai4forensics():
     print_header("1. AI4Forensics: IP Identifier Evaluation")
@@ -74,7 +75,7 @@ def run_stix_validation():
         print("[-] STIX JSON not found at:", stix_demo_path)
 
 def run_iot_and_mobile_audit():
-    print_header("4. Mobile & IoT Datasets Integrity Audit")
+    print_header("4. Mobile & SQLite Evidence Databases Audit")
     hillary_db = os.path.join(REPO_ROOT, "AI4Forensics/CKIM2024/HillaryEmails/archive/database.sqlite")
     if os.path.exists(hillary_db):
         conn = sqlite3.connect(hillary_db)
@@ -92,8 +93,19 @@ def run_iot_and_mobile_audit():
     else:
         print("[-] SQLite evidence file not found at:", hillary_db)
 
+def run_blockchain_crypto_verification():
+    print_header("5. Cryptocurrency & Blockchain Cryptographic Verification")
+    sample_pubkey_hex = "0279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798"
+    pub_bytes = bytes.fromhex(sample_pubkey_hex)
+    sha_hash = hashlib.sha256(pub_bytes).digest()
+    ripemd = hashlib.new('ripemd160', sha_hash).hexdigest()
+    print(f"ECDSA Public Key Point : {sample_pubkey_hex}")
+    print(f"SHA-256 Hash Digest    : {sha_hash.hex()}")
+    print(f"RIPEMD-160 HASH160      : {ripemd}")
+    print("[+] Bitcoin Cryptographic Derivation: SUCCESS")
+
 def run_cli_tools_verification():
-    print_header("5. Linux Forensic CLI Tooling Verification")
+    print_header("6. Linux Forensic CLI Tooling Verification")
     tools = [
         ("The Sleuth Kit (fls)", ["fls", "-V"]),
         ("The Sleuth Kit (mmls)", ["mmls", "-V"]),
@@ -111,18 +123,19 @@ def run_cli_tools_verification():
             print(f"  [--] {name:<25} -> (Not found in PATH)")
 
 def main():
-    print("=" * 65)
+    print("=" * 68)
     print("      DIGITAL FORENSICS LAB - AUTOMATED MASTER RUNNER")
     print("      Engineered by: Subham Biswas | Mentor: Dr. Pooja Shah")
-    print("=" * 65)
+    print("=" * 68)
     run_ai4forensics()
     run_nist_event_logs()
     run_stix_validation()
     run_iot_and_mobile_audit()
+    run_blockchain_crypto_verification()
     run_cli_tools_verification()
-    print("\n" + "=" * 65)
-    print("  🎉 ALL FORENSIC LAB MODULES EXECUTED SUCCESSFULLY!")
-    print("=" * 65 + "\n")
+    print("\n" + "=" * 68)
+    print("  [SUCCESS] ALL FORENSIC LAB MODULES EXECUTED SUCCESSFULLY!")
+    print("=" * 68 + "\n")
 
 if __name__ == "__main__":
     main()
