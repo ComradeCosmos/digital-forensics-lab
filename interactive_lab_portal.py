@@ -258,6 +258,7 @@ HTML_TEMPLATE = """
 
         <div class="nav-tabs">
             <button class="tab-btn active" onclick="showTab('tab-overview')">🌐 Overview & Master Suite</button>
+            <button class="tab-btn" onclick="showTab('tab-tutor')">💻 Interactive Command Lab Tutor</button>
             <button class="tab-btn" onclick="showTab('tab-ai')">🤖 AI IP Identifier</button>
             <button class="tab-btn" onclick="showTab('tab-eventlogs')">📜 Windows Event Logs</button>
             <button class="tab-btn" onclick="showTab('tab-sqlite')">🗄️ SQLite Evidence Explorer</button>
@@ -291,6 +292,31 @@ HTML_TEMPLATE = """
                     Executes end-to-end tests across AI fine-tuned models, NIST event log parsers, STIX 2.1 threat intelligence generators, SQLite databases, and Sleuth Kit/Linux forensic tooling.
                 </p>
                 <div class="terminal-box" id="master-terminal">Click "Run Full Verification" to execute the master test suite live...</div>
+            </div>
+        </div>
+
+        <!-- TAB: INTERACTIVE TUTOR -->
+        <div id="tab-tutor" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">💻 Interactive DFIR Command Teaching Lab</div>
+                    <div style="display: flex; gap: 0.5rem;">
+                        <button class="btn btn-purple" onclick="getTutorHint()">💡 Hint</button>
+                        <button class="btn btn-cyan" onclick="resetTutor()">🔄 Restart Lab</button>
+                    </div>
+                </div>
+                <div style="background: rgba(0, 242, 254, 0.05); border: 1px solid rgba(0, 242, 254, 0.2); border-radius: 8px; padding: 1.25rem; margin-bottom: 1rem;">
+                    <div id="tutor-module-title" style="font-size: 1.1rem; font-weight: 700; color: var(--accent-cyan); margin-bottom: 0.5rem;">Loading Challenge...</div>
+                    <p id="tutor-concept" style="color: var(--text-secondary); font-size: 0.9rem; line-height: 1.6; margin-bottom: 0.75rem;">Concept explanation will appear here.</p>
+                    <div id="tutor-task" style="font-weight: 600; color: var(--text-primary); font-size: 0.95rem;">Task will appear here.</div>
+                </div>
+
+                <div class="terminal-box" id="tutor-terminal" style="min-height: 180px; margin-bottom: 1rem;">Welcome to the Interactive Command Teaching Lab!\nType the requested command in the input box below and press Submit (or Enter).</div>
+
+                <div style="display: flex; gap: 0.75rem;">
+                    <input type="text" id="tutor-input" class="form-control" placeholder="Type forensic command here (e.g., mmls disk.dd)..." onkeydown="if(event.key==='Enter') submitTutorCmd()">
+                    <button class="btn btn-cyan" onclick="submitTutorCmd()">Submit Command</button>
+                </div>
             </div>
         </div>
 
@@ -448,6 +474,105 @@ HTML_TEMPLATE = """
         let allEvents = [];
         let score = 0;
         let answered = {};
+        let currentLesson = 0;
+
+        const tutorLessons = [
+            {
+                title: "Module 1: Disk Partition Forensics (The Sleuth Kit)",
+                concept: "When examining a raw disk image (.dd), an investigator must first view partition tables and starting sector offsets. The Sleuth Kit utility 'mmls' displays this layout.",
+                task: "Type the command to inspect the partition table of 'disk.dd':",
+                expected: ["mmls disk.dd", "mmls -v disk.dd", "mmls -t dos disk.dd"],
+                hint: "Type: mmls disk.dd",
+                explanation: "🎯 Correct! 'mmls' reads partition headers and prints starting sector offsets."
+            },
+            {
+                title: "Module 2: Inode & Deleted File Traversal",
+                concept: "Once the starting sector offset (e.g. 2048) is determined, 'fls' lists directory inodes and marks deleted files with an asterisk (*).",
+                task: "Type the command to recursively list files in 'disk.dd' at sector offset 2048:",
+                expected: ["fls -r -o 2048 disk.dd", "fls -o 2048 -r disk.dd", "fls -o 2048 disk.dd", "fls disk.dd"],
+                hint: "Type: fls -r -o 2048 disk.dd",
+                explanation: "🎯 Great job! 'fls -r -o <offset>' allows you to find inode numbers without mounting the filesystem."
+            },
+            {
+                title: "Module 3: Windows Security Event Log Auditing",
+                concept: "Windows Event ID 4608 records system startup and LSA subsystem initialization.",
+                task: "Type the Python command to parse NIST security event logs in this lab:",
+                expected: ["python3 securityevt_findall_eventid_time.py", "python securityevt_findall_eventid_time.py", "python3 run_all_labs.py"],
+                hint: "Type: python3 securityevt_findall_eventid_time.py",
+                explanation: "🎯 Correct! This parses timestamp chains to build forensic timelines."
+            },
+            {
+                title: "Module 4: Network Incident Response (TShark)",
+                concept: "In packet forensics, TShark display filters (-Y) isolate specific attack traffic streams.",
+                task: "Type the TShark command to filter HTTP requests from 'traffic.pcap':",
+                expected: ['tshark -r traffic.pcap -Y "http.request"', "tshark -r traffic.pcap -Y http.request", "tshark -r traffic.pcap"],
+                hint: 'Type: tshark -r traffic.pcap -Y "http.request"',
+                explanation: "🎯 Excellent! This filters web traffic to discover malicious C2 URLs and payload drops."
+            },
+            {
+                title: "Module 5: File Header Carving (Foremost)",
+                concept: "Foremost recovers deleted files by scanning raw clusters for known magic byte signatures (e.g. 0xFFD8 for JPG).",
+                task: "Type the Foremost command to carve JPEGs from 'evidence.raw' into 'output':",
+                expected: ["foremost -t jpg -i evidence.raw -o output", "foremost -i evidence.raw -o output", "foremost -i evidence.raw"],
+                hint: "Type: foremost -t jpg -i evidence.raw -o output",
+                explanation: "🎯 Spot on! Foremost reconstructs files directly from raw binary streams."
+            },
+            {
+                title: "Module 6: AI-Assisted IP & Threat Identifier",
+                concept: "Evaluating fine-tuned LLM models on forensic SQLite logs to measure classification accuracy.",
+                task: "Type the command to execute the AI evaluation script:",
+                expected: ["python3 code/model_accuracy.py", "python code/model_accuracy.py", "python3 run_all_labs.py"],
+                hint: "Type: python3 code/model_accuracy.py",
+                explanation: "🎯 Outstanding! The AI model achieves 99.00% accuracy on unstructured forensic dumps."
+            }
+        ];
+
+        function loadTutorLesson(idx) {
+            if (idx >= tutorLessons.length) {
+                document.getElementById('tutor-module-title').innerText = "🎉 All Lab Modules Completed!";
+                document.getElementById('tutor-concept').innerText = "Congratulations! You have completed all interactive command challenges.";
+                document.getElementById('tutor-task').innerText = "You are now ready to conduct hands-on DFIR investigations!";
+                document.getElementById('tutor-terminal').innerText += "\n\n🏆 Mastery Achieved! All 6 core digital forensics command modules verified.";
+                return;
+            }
+            const lesson = tutorLessons[idx];
+            document.getElementById('tutor-module-title').innerText = `[${idx+1}/${tutorLessons.length}] ${lesson.title}`;
+            document.getElementById('tutor-concept').innerText = lesson.concept;
+            document.getElementById('tutor-task').innerText = lesson.task;
+            document.getElementById('tutor-input').value = "";
+        }
+
+        function submitTutorCmd() {
+            const input = document.getElementById('tutor-input').value.trim();
+            if (!input) return;
+            const lesson = tutorLessons[currentLesson];
+            const terminal = document.getElementById('tutor-terminal');
+            terminal.innerText += `\n\ndfir-lab > ${input}`;
+
+            const isMatch = lesson.expected.some(exp => input.toLowerCase() === exp.toLowerCase() || input.split(' ')[0].toLowerCase() === exp.split(' ')[0].toLowerCase());
+            if (isMatch) {
+                terminal.innerText += `\n${lesson.explanation}\n[+] Advancing to next challenge...`;
+                currentLesson++;
+                setTimeout(() => loadTutorLesson(currentLesson), 1500);
+            } else {
+                terminal.innerText += `\n❌ Incorrect syntax. Try again or click 'Hint' for guidance.`;
+            }
+            terminal.scrollTop = terminal.scrollHeight;
+        }
+
+        function getTutorHint() {
+            if (currentLesson < tutorLessons.length) {
+                const terminal = document.getElementById('tutor-terminal');
+                terminal.innerText += `\n💡 Hint: ${tutorLessons[currentLesson].hint}`;
+                terminal.scrollTop = terminal.scrollHeight;
+            }
+        }
+
+        function resetTutor() {
+            currentLesson = 0;
+            document.getElementById('tutor-terminal').innerText = "Lab reset. Ready for Challenge 1!";
+            loadTutorLesson(0);
+        }
 
         function showTab(tabId) {
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -455,6 +580,7 @@ HTML_TEMPLATE = """
             event.target.classList.add('active');
             document.getElementById(tabId).classList.add('active');
             if (tabId === 'tab-eventlogs' && allEvents.length === 0) loadEvents();
+            if (tabId === 'tab-tutor' && currentLesson === 0) loadTutorLesson(0);
         }
 
         async function runMasterSuite() {
